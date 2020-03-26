@@ -1,6 +1,7 @@
 ##### Begin fehlerrechnung.py - importing necessary modules ####################
 
-import algebraic_function as af
+# from ..calculus import algebraic_function as af
+import physicsgoe.calculus.algebraic_function as af
 
 
 ##### Struktur-Methoden ########################################################
