@@ -1,9 +1,13 @@
 import xlrd
 import numpy as np
 
-class excel_sheet:
+
+class ExcelSheet:
 
     def __init__(self, file_name, **kwargs):
+        """Initialises the ExcelSheet-Object by parsing the Sheet int a list.
+
+        """
         try:
             sheet_index = kwargs['sheet_index']
         except KeyError:
@@ -24,7 +28,8 @@ class excel_sheet:
             self.data.append(row)
 
     def __iter__(self):
-        return iter(self.data);
+        """Return the iterator of the raw data."""
+        return iter(self.data)
 
     def iter_row(self, row_index):
         return iter(self.data[row_index])
@@ -38,22 +43,35 @@ class excel_sheet:
     def get_data(self):
         return self.data
 
+    # def get_box(self, col, row, shape):
+    #     col, row = self.resolve_index([col, row])
+    #     return self.data[row-1:shape[1]][-1]
+
     def get_float_box(self, c, r, **kwargs):
+        """Return a numpy-array of float values with (c,r) top left corner."""
         c, r = self.resolve_index([c, r])
         start = self.get_cell_value_unresolved(c, r)
         if not isinstance(start, float):
             raise TypeError(f'{start} is not an float-Object.')
-        shape = self.get_float_box_shape(c, r)[::-1]
+        shape = self.get_float_box_shape(c, r)
+        # print(shape)
         f_box = np.zeros(shape, dtype=float)
-        for rnum in range(shape[1]):
-            for cnum in range(shape[0]):
+        # print(f_box)
+        for rnum in range(shape[0]):
+            for cnum in range(shape[1]):
                 try:
-                    f_box[cnum,rnum] = self.get_cell_value_unresolved(c+cnum, r+rnum)
+                    # print(self.get_cell_value_unresolved(
+                        # c+cnum, r+rnum))
+                    f_box[rnum, cnum] = self.get_cell_value_unresolved(
+                        c+cnum, r+rnum)
                 except TypeError:
-                    print(f'{self.get_cell_value_unresolved(c+cnum, r+rnum)} cannot be converted to float')
-                    f_box[cnum,rnum] = None
+                    print(f'\"{self.get_cell_value_unresolved(c+cnum, r+rnum)}\" cannot be converted to float')
+                    f_box[rnum, cnum] = None
+                except ValueError:
+                    print(f'\"{self.get_cell_value_unresolved(c+cnum, r+rnum)}\" cannot be converted to float')
+                    f_box[rnum, cnum] = None
         try:
-            header_shape = [shape[0],1]
+            header_shape = [shape[0], 1]
             header_shape[1] = kwargs['header_shape']
             header = self.get_header(c, r, header_shape)
             return f_box, header
@@ -65,7 +83,8 @@ class excel_sheet:
         header = np.zeros(h_shape, dtype='<U32')
         for rnum in range(h_shape[1]):
             for cnum in range(h_shape[0]):
-                header[cnum, rnum] = str(self.get_cell_value_unresolved(c+cnum, r-1-rnum))
+                header[cnum, rnum] = str(
+                    self.get_cell_value_unresolved(c+cnum, r-1-rnum))
         return header
 
     def get_float_box_shape(self, c, r):
@@ -73,7 +92,7 @@ class excel_sheet:
         val = start
         cnum = 0
         while isinstance(val, float):
-            cnum+=1
+            cnum += 1
             try:
                 val = self.get_cell_value_unresolved(c+cnum, r)
             except IndexError:
@@ -81,7 +100,7 @@ class excel_sheet:
         val = start
         rnum = 0
         while isinstance(val, float):
-            rnum+=1
+            rnum += 1
             try:
                 val = self.get_cell_value_unresolved(c, r+rnum)
             except IndexError:
@@ -93,6 +112,7 @@ class excel_sheet:
         return self.get_cell_value_unresolved(c, r)
 
     def get_cell_value_unresolved(self, c, r):
+        # print(self.data[r-1][c-1])
         return self.data[r-1][c-1]
 
     def resolve_index(self, list):
@@ -117,7 +137,7 @@ class excel_sheet:
         ascii_char = ord(char)
         if ascii_char >= 97 and ascii_char <= 122:
             return ascii_char-97
-        elif ascii_char >=65 and ascii_char <= 90:
+        elif ascii_char >= 65 and ascii_char <= 90:
             return ascii_char-65
         else:
             raise TypeError(f'{char} is not a valid character.')
@@ -132,11 +152,11 @@ class excel_sheet:
         return s
 
 
-
 def main():
-    es = excel_sheet('Diffusion.xlsx')
-    data= es.get_float_box('A',8)
+    es = ExcelSheet('Diffusion.xlsx')
+    data = es.get_float_box('A', 8)
     print(data)
+
 
 if __name__ == '__main__':
     main()

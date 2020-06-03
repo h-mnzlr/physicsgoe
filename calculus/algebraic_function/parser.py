@@ -1,13 +1,17 @@
-##### begin parser.py ##########################################################
+# begin parser.py
 
 from .lexer import Lexer
-from .algebraic_function_grammar import linking_operator_order, linking_operator_dict
-from .algebraic_function_classes import Constant, Parameter
+from .algebraic_function_grammar import linking_operator_order
+from .algebraic_function_grammar import linking_operator_dict
+from .algebraic_function_grammar import calculation_operator_dict
+from .algebraic_function_grammar import Constant, Parameter
 
-##### Parser-Class that uses a Lexer to interpret a String into a function object #####
+# Parser-Class that uses a Lexer to interpret a String into a function object
+
 
 def parse(s):
     return Parser(s).parse()
+
 
 class Parser:
 
@@ -19,6 +23,7 @@ class Parser:
     # statement -> LPAREN expr RPAREN
 
     def __init__(self, strg=None, lexer=None):
+        self.strg = strg
         if strg:
             self.lexer = Lexer(strg)
         else:
@@ -40,7 +45,8 @@ class Parser:
         if self.curr_token[0] == class_type:
             self.curr_token = self.next_token()
         else:
-            raise TypeError(f'Bad Input: expected {class_type} and got {self.curr_token[0]}')
+            raise TypeError(f'''Bad Input: expected {class_type} and got
+            {self.curr_token[0]} while parsing {self.strg}.''')
 
     def expr(self, depth=0):
         # print(f'evaluating expression at token: {self.curr_token}, depth: {depth}')
@@ -77,4 +83,4 @@ class Parser:
             raise TypeError(f'Couldn\'t understand token: {token}')
         return node
 
-##### end parser.py ############################################################
+# end parser.py
