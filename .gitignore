@@ -1,0 +1,26 @@
+# Heiko Menzler
+# heikogeorg.menzler@stud.uni-goettingen.de
+#
+# Date: 03. 06.2020
+
+# .gitignore file for the calculus repository
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+
+# ignore all swap-file fragments
+*.swp
+*.swo
+*~
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
