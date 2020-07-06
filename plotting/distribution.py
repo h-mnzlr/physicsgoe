@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 
 def errorbar(x_data, y_data, x_err, y_err, plot=plt, color="blue", label=None):
-    plt.errorbar(x_data, y_data, y_err, x_err, fmt='.', color=color,
+    plt.errorbar(x_data, y_data, yerr=y_err, xerr=x_err, fmt='.', color=color,
                  label=label)
 
 

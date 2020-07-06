@@ -2,8 +2,9 @@
 
 # from ..calculus import algebraic_function as af
 import math
+import numpy as np
 import physicsgoe.calculus.algebraic_function as af
-
+from physicsgoe.tools.decorators import dict_list, lengths
 
 # Struktur-Methoden
 import functools
@@ -21,21 +22,21 @@ def dict_input_args(f):
         arg_lists = []
         for arg in args:
             try:
-                arg_lists.append(af.dict_list(arg))
+                arg_lists.append(dict_list(arg))
             except NotImplementedError:  # arg is not a dict
                 arg_lists.append(arg)
 
         # iterate over the arguments in the list and select arguments for a
         # function call
         rv_ls = []
-        lengths = af.lengths(arg_lists)
-        for i in range(max(lengths)):
+        le = lengths(arg_lists)
+        for i in range(max(le)):
             args = []
             for index, arg in enumerate(arg_lists):
                 try:
                     args.append(arg[i])
                 except IndexError:  # Index out of bounds - using last element
-                    args.append(arg[lengths[index] - 1])
+                    args.append(arg[le[index] - 1])
                 except TypeError:  # arg not subscribtable - without indexing
                     args.append(arg)
 
@@ -187,9 +188,9 @@ def error_propagation(func, values, errors):
     sum = 0
     for key in values:
         der = func.derivative(key)
-        sub = der(values)*errors[key]
+        sub = der(**values)*errors[key]
         sum += sub*sub
-    return func(values), math.sqrt(sum)
+    return func(**values), np.sqrt(sum)
 
 
 @dict_input_args

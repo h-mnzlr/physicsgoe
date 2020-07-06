@@ -9,13 +9,20 @@ def linear_model(params, x):
     return params[0]*x+params[1]
 
 
+def lineal_model_origin(params, x):
+    """A linear Function without y-displacement."""
+    return params[0] * x
+
+
 def linear_regression(data, err):
     """Calculate a linear regression using scipy.odr and return fit output."""
     print('Fitting with')
-    print(data)
+    print(data[:, 0], data[:, 1])
+    print('and Error')
+    print(err[:, 0], err[:, 1])
     beta0 = get_start_values(data)
     model = Model(linear_model)
-    rdata = RealData(data[:, 0], data[:, 1], sx=err[0])
+    rdata = RealData(data[:, 0], data[:, 1], sx=err[:, 0], sy=err[:, 1])
     # TODO: check different errors
     fit = ODR(rdata, model, beta0=beta0)
     output = fit.run()
@@ -41,4 +48,4 @@ def simple_regression(data):
 
 def get_start_values(data):
     """Return the start values for fitting."""
-    return (1, 0)
+    return (.01, 0)

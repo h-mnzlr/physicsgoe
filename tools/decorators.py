@@ -35,7 +35,7 @@ def dict_list(list_dict):
     lengths = list( list_lengths( list_dict ) )
     max_length = max( lengths )
     if max_length <= 1:
-        raise TypeError('Not iterable.')
+        raise TypeError(f'{list_dict} is not iterable.')
     for i in range(max_length):
         dictio = {}
         for index, key in enumerate(list_dict):
@@ -57,11 +57,11 @@ def dict_list(list_dict):
     '''
     if not isinstance(list_dict, dict):
         raise NotImplementedError
-    max_length = max( list_lengths(list_dict) )
+    max_length = max(list_lengths(list_dict))
     if max_length <= 1:
         raise TypeError('Not iterable.')
 
-    rv = [ { key: item[i] for key, item in list_dict.items() } for i in range(max_length) ]
+    rv = [{key: item[i] for key, item in list_dict.items()} for i in range(max_length)]
     return rv
 
 
@@ -70,10 +70,13 @@ def list_lengths(list_dict):
     Function that evaluates a dictionary of iterables and returns a generator of
     the length for each dict value.
     '''
+    if not hasattr(list_dict, 'values'):
+        raise TypeError(f'{list_dict} is not dictionarylike.')
+
     for item in list_dict.values():
         try:
             yield len(item)
-        except TypeError: # no attribute __len__ - return 1
+        except TypeError:  # no attribute __len__ - return 1
             yield 1
 
 
@@ -81,7 +84,7 @@ def lengths(list):
     for item in list:
         try:
             yield len(item)
-        except TypeError: # no attribute __len__ - return 1
+        except TypeError:  # no attribute __len__ - return 1
             yield 1
 
 def before_meth(meth, other):

@@ -1,4 +1,6 @@
 # begin algebraic_function_grammar.py
+import math
+import cmath
 from abc import abstractmethod
 
 
@@ -38,7 +40,7 @@ class LinkingFunction(AlgebraicFunction):
         rv = "("
         rv += str(self.link1) + self.linking_operator + str(self.link2)
         rv += ")"
-        return
+        return rv
 
 
 # Class that represents unitary Operators
@@ -147,9 +149,9 @@ class PowerFunction(LinkingFunction):
     def derivative(self, char):  # u**v
         u = self.link1
         v = self.link2
-        u_prime = u.derivate(char)
-        v_prime = v.derivate(char)
-        return u**v * (Logarithm(u) * v_prime + v * u_prime / u)
+        u_prime = u.derivative(char)
+        v_prime = v.derivative(char)
+        return u ** v * (Logarithm(u) * v_prime + v * u_prime / u)
 
 
 class Subtraction(Addition):
@@ -158,7 +160,7 @@ class Subtraction(Addition):
         super().__init__(link1, Constant(-1) * link2)
 
     def __str__(self):
-        return "(" + str(self.link1) + "-" + str(self.link2) + ")"
+        return f"({self.link1}-{self.link2})"
 
 
 class Division(Multiplication):
@@ -191,10 +193,10 @@ class ExponentialFunction(CalculationFunction):
         super().__init__(func, "exp")
 
     def value(self, **kwargs):
-        return math.exp(self.func.value(**kwargs))
+        return cmath.exp(self.func.value(**kwargs))
 
     def derivative(self, char):
-        print(f'inner: {self.func.derivative(char)}')
+        # print(f'inner: {self.func.derivative(char)}')
         return self * self.func.derivative(char)
 
 
@@ -205,10 +207,12 @@ class Logarithm(CalculationFunction):
 
     def value(self, **kwargs):
         v = self.func.value(**kwargs)
+        print('V:', v)
+        print('Kwargs:', kwargs['a'])
         if v == 0:  # 0 undefined
             return float('NaN')
         else:
-            return math.log(v)
+            return cmath.log(v)
 
     def derivative(self, char):
         return self.func.derivative(char) / self.func
@@ -271,7 +275,7 @@ class SquareRoot(CalculationFunction):
 
     def value(self, **kwargs):
         v = self.func.value(**kwargs)
-        return math.sqrt(v)
+        return cmath.sqrt(v)
 
     def derivative(self, char):
         return PowerFunction(func, 0.5).derivative(char)
