@@ -1,0 +1,3 @@
+[submodule "api_studip"]
+	path = api_studip
+	url = git@gitlab.gwdg.de:heikogeorg.menzler/api-studip.git
